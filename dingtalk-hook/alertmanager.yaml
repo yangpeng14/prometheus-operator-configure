@@ -1,0 +1,23 @@
+global:
+  resolve_timeout: 5m
+route:
+  group_by: ['job', 'severity']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 12h
+  receiver: webhook 
+  routes:
+  - receiver: webhook
+    match:
+      alertname: CoreDNSDown
+  - match:
+      # This was previously named DeadMansSwitch
+      alertname: Watchdog
+    receiver: webhook 
+templates:
+  - "*.tmpl"
+receivers:
+- name: 'webhook'
+  webhook_configs:
+  - url: 'http://dingtalk-hook.monitoring.svc.cluster.local:5000'
+    send_resolved: true

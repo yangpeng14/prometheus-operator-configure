@@ -1,0 +1,2 @@
+# 参考https://code.smartstudy.com/op/alertmanager-dingtalk-hook
+kubectl create secret generic dingtalk-secret --from-literal=token=<钉钉群聊的机器人TOKEN> -n monitoring 

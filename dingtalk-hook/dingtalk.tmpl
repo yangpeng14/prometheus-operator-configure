@@ -1,0 +1,15 @@
+{{ define "default.default.message" }}
+{{ range .alerts }}
+========start==========
+告警程序: prometheus_alert
+告警级别: {{ .labels.severity }}
+告警类型: {{ .labels.alertname }}
+故障pod: {{ .labels.pod_name }}
+故障namespace: {{ .labels.namespace }}
+告警详情: {{ .annotations.message }}
+告警状态: {{ .status }}
+触发时间: {{ .startsAt.Format "2013-12-02 15:04:05" }}
+触发结束时间: {{ .endsAt.Format "2013-12-02 15:04:05" }}
+========end==========
+{{ end }}
+{{ end }}

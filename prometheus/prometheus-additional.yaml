@@ -1,0 +1,8 @@
+- job_name: 'notificationMQ'
+  # Override the global default and scrape targets from this job every 5 seconds.
+  scrape_interval: 5m
+  metrics_path: '/notification/metrics'
+  static_configs:
+    - targets: ['api.smartstudy.com']
+      labels:
+        group: 'production'
