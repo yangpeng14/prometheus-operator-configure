@@ -16,3 +16,11 @@ spec:
     runAsUser: 1000
   serviceAccountName: alertmanager-main
   version: v0.16.1
+  retention: 360h 
+  storage:
+    volumeClaimTemplate:
+      spec:
+        storageClassName: alertmanager-data-db
+        resources:
+          requests:
+            storage: 5Gi
