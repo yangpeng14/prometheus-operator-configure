@@ -1,0 +1,36 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    prometheus: k8s
+    role: alert-rules
+  name: noahpod-rules
+  namespace: monitoring
+spec:
+  groups:
+  - name: noahpod.rules
+    rules:
+    - alert: PodMemUsage
+      expr: sum by(container_name, pod_name, namespace) (container_memory_usage_bytes{container_name!=""}) / sum by(container_name, pod_name, namespace) (container_spec_memory_limit_bytes{container_name!=""}) * 100 != +Inf > 90
+      for: 15m
+      labels:
+          severity: warning
+      annotations:
+          summary: "{{$labels.container_name}}: Pod High Mem usage detected"
+          message: '{{$labels.container_name}}: Pod Mem is above 90% ,(current value is: {{ printf "%0.0f" $value }})'
+    - alert: NetI/O_RX
+      expr: sort_desc(sum by(container_name, pod_name, namespace) (rate (container_network_receive_bytes_total{container_name!=""}[1m]) )) /1024 /1024 /60 * 8 > 10
+      for: 15m
+      labels:
+          severity: warning
+      annotations:
+          summary: "{{$labels.container_name}}: Pod High NetI/O_RX detected"
+          message: '{{$labels.container_name}}: Pod NetI/O_RX is more than 10Mbps ,(current value is: {{ printf "%0.0f" $value }})'     
+    - alert: NetI/O_TX
+      expr: sort_desc(sum by (container_name, pod_name, namespace) (rate (container_network_transmit_bytes_total{container_name!=""}[1m]) )) /1024 /1024 /60 * 8 > 10
+      for: 15m
+      labels:
+          severity: warning
+      annotations:
+          summary: "{{$labels.container_name}}: Pod High NetI/O_TX detected"
+          message: '{{$labels.container_name}}: Pod NetI/O_TX is more than 10Mbps ,(current value is: {{ printf "%0.0f" $value }})'

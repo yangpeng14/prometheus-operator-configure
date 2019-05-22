@@ -13,7 +13,7 @@ spec:
     - alert: EtcdClusterUnavailable
       annotations:
         summary: etcd cluster small
-        description: If one more etcd peer goes down the cluster will be unavailable
+        message: If one more etcd peer goes down the cluster will be unavailable
       expr: |
         count(up{job="etcd"} == 0) > (count(up{job="etcd"}) / 2 - 1)
       for: 3m
