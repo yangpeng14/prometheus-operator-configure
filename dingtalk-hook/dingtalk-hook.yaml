@@ -11,7 +11,7 @@ spec:
     spec:
       containers:
       - name: dingtalk-hook
-        image: harbor.smartstudy.tech/public/alertmanager-dingtalk-hook:v0.1.3 
+        image: harbor.example.com/alertmanager-dingtalk-hook:v0.1.3 
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 5000
