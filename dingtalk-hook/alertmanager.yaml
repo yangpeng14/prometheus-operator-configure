@@ -1,11 +1,12 @@
 global:
   resolve_timeout: 5m
 route:
-  group_by: ['job', 'severity']
+  #group_by: ['job', 'severity']
+  group_by: ['alertname', 'cluster', 'service']
   group_wait: 30s
   group_interval: 5m
   repeat_interval: 12h
-  receiver: webhook 
+  receiver: webhook
   routes:
   - receiver: webhook
     match:
@@ -13,11 +14,26 @@ route:
   - match:
       # This was previously named DeadMansSwitch
       alertname: Watchdog
-    receiver: webhook 
+    receiver: 'null'
 templates:
   - "*.tmpl"
+inhibit_rules:
+- source_match:
+    severity: 'warning'
+  target_match:
+    severity: 'warning'
+  # Apply inhibition if the alertname is the same.
+  equal: ['alertname', 'cluster', 'service']
+- source_match:
+    alertname: NodeDown
+    severity: critical
+  target_match:
+    severity: critical
+  equal:
+    - node
 receivers:
 - name: 'webhook'
   webhook_configs:
   - url: 'http://dingtalk-hook.monitoring.svc.cluster.local:5000'
     send_resolved: true
+- name: 'null'
